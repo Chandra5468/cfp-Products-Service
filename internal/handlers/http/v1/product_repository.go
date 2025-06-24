@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/Chandra5468/cfp-Products-Service/internal/types"
@@ -44,7 +43,6 @@ func (h *Handler) getAProduct(w http.ResponseWriter, r *http.Request) {
 	// pd, err := h.store.GetProduct(gpd.Name)
 
 	pId := chi.URLParam(r, "productId")
-	log.Println("THis is pid--------", pId)
 	if pId == "" {
 		responses.WriteJson(w, http.StatusBadRequest, "please send productId in url")
 		return

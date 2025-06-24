@@ -2,7 +2,6 @@ package products
 
 import (
 	"database/sql"
-	"log"
 
 	"github.com/Chandra5468/cfp-Products-Service/internal/types"
 )
@@ -28,7 +27,6 @@ func (s *Store) GetProduct(id string) (pds *types.Product, errs error) {
 	pd := types.Product{}
 	err := s.db.QueryRow(query, id).Scan(&pd.Id, &pd.Name, &pd.Description, &pd.Price, &pd.Quantity, &pd.CreatedAt, &pd.UpdatedAt)
 
-	log.Println("This is err--------", err, pd)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return &pd, nil

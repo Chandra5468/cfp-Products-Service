@@ -36,29 +36,18 @@ func (a *APIServer) RUN() {
 
 	// Currently directing all calls for v1 version.
 
-	// router.Use(middleware.Logger)
-	// Add an extra middleware to declare cors for http server requests and responses
-	// router.Use(middleware.CorsHandler)
-	middleware.CorsHandler(router) // Not working need to look why
-
-	// As this is a microservice which handled all operations related to products only.
-	// 	//      We are creating a datastore where all products related http operations can be handled
+	// router.Use(middleware.Logger
+	newHandler := middleware.CorsHandler(router)
 	productsStore := products.NewStore(a.db)
-
-	// This productsStore is a struct which has all products related operations methods in psql
-	// We are passing it for an interface.
-	// So in future if we switch database interface will mandate to implement those same methods
 	productsHandler := v1.NewHandler(productsStore)
 	productsHandler.RegisterRoutes(router)
 
 	server := &http.Server{
 		Addr:    a.addr,
-		Handler: router,
+		Handler: newHandler,
 	}
 
-	// If any interuption signals come. We will gracefull shutdown the server and close all the database connections
 	done := make(chan os.Signal, 1)
-
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		slog.Info("message", "Listening on address", a.addr)
@@ -67,7 +56,7 @@ func (a *APIServer) RUN() {
 		}
 	}()
 
-	<-done // Here our main program is continously getting blocked until some value is read.
+	<-done
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
