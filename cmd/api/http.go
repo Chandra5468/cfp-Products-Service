@@ -38,8 +38,8 @@ func (a *APIServer) RUN() {
 
 	// router.Use(middleware.Logger
 	newHandler := middleware.CorsHandler(router)
-	productsStore := products.NewStore(a.db)
-	productsHandler := v1.NewHandler(productsStore)
+	productsStore := products.NewStore(a.db)        // call services first (from postgresql database)
+	productsHandler := v1.NewHandler(productsStore) // assign those services to handler. Internally implements interfaces. So, if services come from mongo in future they need to implement those services
 	productsHandler.RegisterRoutes(router)
 
 	server := &http.Server{
