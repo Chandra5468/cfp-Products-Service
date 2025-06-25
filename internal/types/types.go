@@ -8,11 +8,12 @@ import (
 
 type ProductsStore interface {
 	GetAllProducts(pincode int16)
-	GetProduct(id string) (*Product, error)
+	GetProduct(name string) (*Product, error)
 	ProductsCount()
 	AddProduct()
-	UpdateProducts()
+	UpdateProductsQuantity(id *uuid.UUID, quantity *int16) error
 	DeleteProduct()
+	GetProductByID(id *uuid.UUID) (*Product, error)
 }
 
 // Declaring structs here because :
@@ -41,4 +42,16 @@ type Product struct {
 
 type GetProduct struct {
 	Name string `json:"name"`
+}
+
+type BuyCart struct {
+	ProductId uuid.UUID `json:"product_id"`
+	Quantity  int16     `json:"quantity"`
+}
+
+type PurchasedProducts struct { // This should be returned
+	ProductId   uuid.UUID `json:"product_id"`
+	Quantity    int16     `json:"quantity"`
+	TotalAmount float32   `json:"total_amount"`
+	Status      int8      `json:"status"`
 }
