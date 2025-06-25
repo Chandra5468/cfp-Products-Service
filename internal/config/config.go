@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
@@ -18,12 +19,9 @@ func MustLoad() error {
 	if env == "" {
 		env = "local"
 	}
-	envConfigPath := fmt.Sprintf("internal\\envs\\.env.%s", env) // If you arerunning on ubuntu do sepcify accordingly
 
+	// envConfigPath := fmt.Sprintf("internal\\envs\\.env.%s", env) // If you arerunning on ubuntu do sepcify accordingly
+	envConfigPath := filepath.Join("internal", "envs", fmt.Sprintf(".env.%s", env))
 	err := godotenv.Load(envConfigPath)
-
-	// return &Config{
-	// 	err: err,
-	// }
 	return err
 }

@@ -14,6 +14,7 @@ type ProductsStore interface {
 	UpdateProductsQuantity(id *uuid.UUID, quantity *int16) error
 	DeleteProduct()
 	GetProductByID(id *uuid.UUID) (*Product, error)
+	ModifyProducts(updateProduct *Product)
 }
 
 // Declaring structs here because :

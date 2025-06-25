@@ -2,7 +2,9 @@ package products
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/Chandra5468/cfp-Products-Service/internal/types"
 	"github.com/google/uuid"
@@ -79,4 +81,42 @@ func (s *Store) GetProductByID(id *uuid.UUID) (*types.Product, error) {
 	} else {
 		return productDetails, nil
 	}
+}
+
+func (s *Store) ModifyProducts(updateProduct *types.Product) {
+	// Always use use parameterized queries with placeholders
+	log.Println("Data is here", updateProduct)
+	setClauses := []string{}
+	args := []interface{}{}
+	argPos := 1
+	if updateProduct.Description != "" {
+		setClauses = append(setClauses, fmt.Sprintf("description = $%d", argPos))
+		args = append(args, updateProduct.Description)
+		argPos++
+	}
+	if updateProduct.Name != "" {
+		setClauses = append(setClauses, fmt.Sprintf("name = $%d", argPos))
+		args = append(args, updateProduct.Name)
+		argPos++
+	}
+	if updateProduct.Price != 0 {
+		setClauses = append(setClauses, fmt.Sprintf("name = $%d", argPos))
+		args = append(args, updateProduct.Price)
+		argPos++
+	}
+	if updateProduct.Quantity != 0 {
+		setClauses = append(setClauses, fmt.Sprintf("quantity = $%d", argPos))
+		args = append(args, updateProduct.Quantity)
+		argPos++
+	}
+
+	if len(setClauses) == 0 {
+		return
+	}
+
+	query := "UPDATE products set " + strings.Join(setClauses, ",") + fmt.Sprintf(" WHERE id = $%d", argPos)
+
+	args = append(args, updateProduct.Id)
+
+	s.db.Exec(query, args...)
 }

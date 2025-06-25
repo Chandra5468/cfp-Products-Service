@@ -30,20 +30,11 @@ func (h *Handler) RegisterRoutes(router *chi.Mux) {
 	// Routes for admin purposes
 	router.Get("/v1/api/admin/products", h.getAllProducts)
 	router.Post("/v1/api/admin/product", h.addProducts)                 // Add a product
-	router.Put("/v1/api/admin/product/{productId}", h.updateProducts)   // Update product may be quantity, may be locations of availability
+	router.Put("/v1/api/admin/product/{productId}", h.productsUpdate)   // Update product may be quantity, may be locations of availability
 	router.Delete("/v1/api/admin/product/{productId}", h.deleteProduct) // Delete a product
 }
 
 func (h *Handler) getAProduct(w http.ResponseWriter, r *http.Request) {
-	//
-	// gpd := &types.GetProduct{}
-	// err := json.NewDecoder(r.Body).Decode(gpd)
-	// if err != nil {
-	// 	responses.WriteJson(w, http.StatusBadRequest, "body is not getting deserialized")
-	// 	return
-	// }
-	// pd, err := h.store.GetProduct(gpd.Name)
-
 	name := chi.URLParam(r, "name")
 	if name == "" {
 		responses.WriteJson(w, http.StatusBadRequest, "please send product name in url")
@@ -61,16 +52,6 @@ func (h *Handler) getAProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) productsCount(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// Admin level handlers
-
-func (h *Handler) getAllProducts(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (h *Handler) addProducts(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -132,6 +113,31 @@ func (h *Handler) updateProducts(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Admin level handlers
+
+func (h *Handler) getAllProducts(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *Handler) addProducts(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func (h *Handler) deleteProduct(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (h *Handler) productsUpdate(w http.ResponseWriter, r *http.Request) {
+	// Apart from productId and created_at anything can be updated
+	productDetails := &types.Product{}
+
+	err := json.NewDecoder(r.Body).Decode(productDetails)
+	if err != nil {
+		responses.WriteJson(w, http.StatusBadRequest, "unable to unmarshall the req.body")
+		return
+	}
+
+	h.store.ModifyProducts(productDetails)
+
+	responses.WriteJson(w, http.StatusOK, "Successfully updated")
 }
