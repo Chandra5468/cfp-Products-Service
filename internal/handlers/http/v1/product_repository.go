@@ -101,7 +101,7 @@ func (h *Handler) updateProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Return PurchasedProducts
-
+	quantity = cart.Quantity
 	purchased := &types.PurchasedProducts{
 		ProductId:   cart.ProductId,
 		Quantity:    quantity,
