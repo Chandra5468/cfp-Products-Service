@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Chandra5468/cfp-Products-Service/cmd/api"
+	"github.com/Chandra5468/cfp-Products-Service/cmd/grpcserver"
 	"github.com/Chandra5468/cfp-Products-Service/internal/config"
 	"github.com/Chandra5468/cfp-Products-Service/internal/services/database/postgresql"
 )
@@ -27,7 +28,8 @@ func main() {
 	// Connect to Mongodb database here
 
 	// Call GRPC Server here. No need to pass
-
+	grpcServer := grpcserver.NewGrpcServer(":9002", db)
+	go grpcServer.Run()
 	// Calling HTTP API Server
 	server := api.NewApiServer(os.Getenv("HTTP_ADDRESS"), db)
 

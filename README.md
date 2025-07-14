@@ -39,4 +39,30 @@ CREATE TABLE products (
     }
 
 3. GRPC go proto buf generation files
-    protoc --proto_path=pkg/protobuf pkg/protobuf/product.proto --go_out=internal/services/common/genproto/products --go_opt=paths=source_relative --go-grpc_out=internal/services/common/genproto/products --go-grpc_opt=paths=source_relative
+    protoc --proto_path=pkg/genproto/products pkg/genproto/products/product.proto --go_out=pkg/genproto/products --go_opt=paths=source_relative --go-grpc_out=pkg/genproto/products --go-grpc_opt=paths=source_relative
+
+4. The pb.go file contains the Go structs for the Protobuf messages defined in your .proto file. 
+        These are used by  both the client and server to serialize and deserialize data.
+   The _grpc.pb.go file contains the gRPC service interface (for the server to implement) and the client stubs (for the client to call the service).
+
+5. Folder structure
+    // Folder structure
+    cfp-Products-Service/
+    ├── internal/
+    │   ├── services/
+    │   │   ├── common/
+    │   │   │   ├── genproto/
+    │   │   │   │   ├── products/
+    │   │   │   │   │   ├── products.proto
+    │   │   │   │   │   ├── products.pb.go
+    │   │   │   │   │   ├── products_grpc.pb.go
+    │   │   │   │   │   ├── go.mod
+    │   │   │   │   │   ├── go.sum
+    ├── server/
+    │   ├── main.go
+    │   ├── go.mod
+    │   ├── go.sum
+    ├── client/
+    │   ├── main.go
+    │   ├── go.mod
+    │   ├── go.sum
